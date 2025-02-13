@@ -1,0 +1,33 @@
+# Ignore arquivos gerados pelo Maven
+/target/
+
+# Ignore arquivos do STS (Spring Tool Suite)
+/.classpath
+/.project
+/.settings/
+/.factorypath
+/.vscode/
+
+# Ignore logs e arquivos temporários
+*.log
+*.tmp
+hs_err_pid*
+
+# Ignore arquivos de dependências
+/.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+
+# Ignore arquivos específicos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Ignore IDEs e editores comuns
+.idea/
+*.iml
+*.iws
+
+# Ignore configurações do Eclipse
+/.metadata/
+/.recommenders/
+
+
