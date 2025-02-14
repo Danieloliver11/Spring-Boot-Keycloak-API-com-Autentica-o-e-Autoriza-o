@@ -34,5 +34,7 @@ public class AuthController {
 	public ResponseEntity<?> refreshToken(@RequestParam("refresh_token") String refreshToken) {		
 		return ResponseEntity.ok(authService.refreshToken(refreshToken));
 	}
+	
+	//TODO DELETAR USUARIO NO KEYCLOAK
 
 }

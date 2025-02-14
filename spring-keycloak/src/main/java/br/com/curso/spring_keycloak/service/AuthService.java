@@ -60,7 +60,6 @@ public class AuthService {
 		.setClient(clientId)
 		.setSecret(clienteSecret)
 		.setGrantType(grantType)
-//		.setRefreshToken(clientId)
 		.setUserName(usuarioDto.getNome())
 		.setPassword(usuarioDto.getSenha())
 		.build();
@@ -89,7 +88,6 @@ public class AuthService {
 	//------------------
 	
     public ResponseEntity<String> criarUsuario(UsuarioCadastroDTO usuario) {
-    	//http://<keycloak-host>/admin/realms/<realm>/users
 
     	String url = "http://localhost:8080/auth/admin/realms/REALM_SPRING_API/users";
     	
@@ -120,15 +118,13 @@ public class AuthService {
 
         if (response.getStatusCode().is2xxSuccessful()) {
             adicionarGrupo(usuario.getUsername(), "operation");
-            adicionarRoles(usuario.getUsername(), List.of("OPERATION_WRITE", "OPERATION_READ"));
         }
 
         return response;
     }
     
     private String obterTokenadminCli() {
-        // versões mais antigas (< 18), a URL pode ser: com  /auth antes de /realms,
-        String tokenUrl = "http://localhost:8080/auth/realms/master/protocol/openid-connect/token"; // 
+        String tokenUrl = "http://localhost:8080/auth/realms/master/protocol/openid-connect/token";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -181,33 +177,10 @@ public class AuthService {
 
         restTemplate.exchange(url, HttpMethod.PUT, new HttpEntity<>(headers), String.class);
     }
-    //TODO TA DANDO ERRO 
-    private void adicionarRoles(String username, List<String> roles) {
-        String userId = buscarUserId(username);
-        
-        String clientId = buscarClientId("CLIENT_SPRING"); // Buscar UUID correto do client
-
-        
-//        String url = "http://localhost:8080/auth/admin/realms/" + realm + "/users/" + userId + "/role-mappings/realm";
-        
-        String url = "http://localhost:8080/auth/admin/realms/" + realm +
-                "/users/" + userId + "/role-mappings/clients/" + "CLIENT_SPRING";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(obterTokenadminCli());
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        List<Map<String, String>> roleMappings = roles.stream()
-            .map(role -> Map.of("name", role))
-            .toList();
-
-        HttpEntity<List<Map<String, String>>> request = new HttpEntity<>(roleMappings, headers);
-        restTemplate.exchange(url, HttpMethod.POST, request, String.class);
-    }
-    
     
     
     private String buscarClientId(String clientName) {
+    	
         String url = "http://localhost:8080/auth/admin/realms/" + realm + "/clients?clientId=" + clientName;
 
         HttpHeaders headers = new HttpHeaders();
@@ -262,36 +235,7 @@ public class AuthService {
         throw new RuntimeException("Grupo não encontrado: " + groupName);
     }
 	
-	
-//	private String buscarGroupId(String groupName) {
-//	    String url = keycloakServerUrl + "/admin/realms/" + realm + "/groups";
-//	    HttpHeaders headers = new HttpHeaders();
-//	    headers.setBearerAuth(obterTokenAdmin());
-//
-//	    ParameterizedTypeReference<List<Map<String, Object>>> responseType = new ParameterizedTypeReference<>() {};
-//	    ResponseEntity<List<Map<String, Object>>> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(headers), responseType);
-//
-//	    if (response.getBody() == null || response.getBody().isEmpty()) {
-//	        throw new RuntimeException("Nenhum grupo encontrado no Keycloak.");
-//	    }
-//
-//	    return response.getBody().stream()
-//	        .filter(group -> {
-//	            Object nameObj = group.get("name");
-//	            return nameObj instanceof String && nameObj.equals(groupName);
-//	        })
-//	        .map(group -> {
-//	            Object idObj = group.get("id");
-//	            if (idObj instanceof String) {
-//	                return (String) idObj;
-//	            } else {
-//	                throw new RuntimeException("O ID do grupo não é uma string válida: " + idObj);
-//	            }
-//	        })
-//	        .findFirst()
-//	        .orElseThrow(() -> new RuntimeException("Grupo não encontrado: " + groupName));
-//	}
-	
+
 	
 	//---------- 
 	
